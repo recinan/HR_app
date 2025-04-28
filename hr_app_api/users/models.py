@@ -18,6 +18,7 @@ class CustomUser(AbstractUser):
     email=models.EmailField(max_length=150,unique=True)
     phone_number=PhoneNumberField(unique=True)
     user_image = models.ImageField(upload_to=image_upload_to,default="images/user_images/user.jpg")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number','first_name','last_name']
