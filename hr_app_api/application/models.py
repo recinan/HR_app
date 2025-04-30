@@ -9,7 +9,7 @@ def cv_upload_to(instance,file):
     filename = f"{unique_id}.{extension}"
     str_phone_number = str(instance.user.phone_number)
     if file:
-        return os.path.join('cv_files/',f"{str_phone_number}_{filename}")
+        return os.path.join('cv_files/',f"cv_sample_{str_phone_number}_{filename}")
     return None
 
 class Application(models.Model):

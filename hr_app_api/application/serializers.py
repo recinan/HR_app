@@ -7,4 +7,4 @@ class ApplicationSerializer(serializers.ModelSerializer):
     description = serializers.CharField(max_length=256, allow_blank=True)
     class Meta:
         model = Application
-        fields = ['jobTitle','cvFilePath','description']
+        fields = ['id','jobTitle','cvFilePath','description','applied_at']
