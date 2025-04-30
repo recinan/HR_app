@@ -27,6 +27,7 @@ from drf_yasg import openapi
 #     responses={201: ApplicationSerializer},
 #     summary="Create"
 # )
+
 @swagger_auto_schema(
     method='post',
     request_body=ApplicationSerializer,  # ✨ Buraya dikkat!
