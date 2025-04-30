@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'evaulation.apps.EvaulationConfig',
     'notification.apps.NotificationConfig',
     'rest_framework',
+    'drf_yasg',
     'drf_spectacular',
     'phonenumber_field',
 
@@ -148,7 +149,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
