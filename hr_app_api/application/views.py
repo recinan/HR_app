@@ -30,7 +30,7 @@ from drf_yasg import openapi
 
 @swagger_auto_schema(
     method='post',
-    request_body=ApplicationSerializer,  # ✨ Buraya dikkat!
+    request_body=ApplicationSerializer,
     responses={201: ApplicationSerializer},
     operation_summary="Create Application",
 )
@@ -46,15 +46,25 @@ def create_application(request):
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
+@swagger_auto_schema(
+    method='put',
+    request_body=ApplicationSerializer,
+    responses={200: ApplicationSerializer},
+    operation_summary="Update Application",
+)
 @api_view(['GET','PUT'])
 @parser_classes([MultiPartParser, FormParser])
 def update_application(request,pk):
     application = Application.objects.get(pk=pk)
-    serializer = ApplicationSerializer(application, data=request.data)
-    if serializer.is_valid():
-        serializer.save(user=request.user)
+    if request.method == 'GET':
+        serializer = ApplicationSerializer(application)
         return Response(serializer.data)
-    return Response(serializer.errors, status=400)
+    elif request.method == 'PUT':
+        serializer = ApplicationSerializer(application, data = request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
 
 @api_view(['DELETE'])
 @parser_classes([MultiPartParser, FormParser])
