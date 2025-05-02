@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 import os
 import uuid
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -23,6 +24,17 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number','first_name','last_name']
 
-    @property
-    def full_name(self):
+    def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+    
+    def save(self, *args, **kwargs):
+        if not self.username:
+            base_username = slugify(f"{self.first_name}{self.last_name}")
+            username = base_username
+            counter = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+            self.username = username
+        super().save(*args, **kwargs)
+    
