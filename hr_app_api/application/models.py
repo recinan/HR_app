@@ -21,3 +21,4 @@ class Application(models.Model):
 
     def __str__(self):
         return f"Application for {self.user.first_name} {self.user.last_name} - {self.jobTitle}"
+    
