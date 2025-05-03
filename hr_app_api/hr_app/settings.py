@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'drf_spectacular',
     'phonenumber_field',
+    'rest_framework_simplejwt',
 
 ]
 
@@ -155,6 +156,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FormParser',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    )
 }
 
 SPECTACULAR_SETTINGS = {
