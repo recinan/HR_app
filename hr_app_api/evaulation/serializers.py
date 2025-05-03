@@ -6,10 +6,9 @@ class EvaulationSerializer(serializers.ModelSerializer):
     evaulator_name = serializers.SerializerMethodField()
     applicant_name = serializers.SerializerMethodField()
     application_detail = ApplicationSerializer(source='application', read_only=True)
-    job_title = serializers.CharField(source='application.jobTitle', read_only=True)
     class Meta:
         model = Evaulation
-        fields = ['id','application','application_detail','job_title','score','evaulation_description','evaulated_at','applicant_name', 'evaulator_name']
+        fields = ['id','application','application_detail','score','evaulation_description','evaulated_at','applicant_name', 'evaulator_name']
 
     def get_evaulator_name(self, obj):
         return f"{obj.user_evaulator.first_name} {obj.user_evaulator.last_name}"
