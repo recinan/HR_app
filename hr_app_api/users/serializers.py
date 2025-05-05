@@ -4,6 +4,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from phonenumber_field.serializerfields import PhoneNumberField
+from .models import Role
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -26,11 +27,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
         
     def create(self, validated_data):
+        default_role, _ = Role.objects.get_or_create(role_name='Candidate')
+
         user = CustomUser.objects.create(
             email=validated_data['email'],
             phone_number=validated_data['phone_number'],
             first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            last_name=validated_data['last_name'],
+            user_role=default_role
         )
 
         user.set_password(validated_data['password'])

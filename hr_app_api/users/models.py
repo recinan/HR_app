@@ -6,6 +6,12 @@ import uuid
 from django.utils.text import slugify
 
 # Create your models here.
+class Role(models.Model):
+    role_name = models.CharField(max_length=50)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.role_name
 
 class CustomUser(AbstractUser):
     def image_upload_to(self, image):
@@ -20,6 +26,7 @@ class CustomUser(AbstractUser):
     phone_number=PhoneNumberField(unique=True)
     user_image = models.ImageField(upload_to=image_upload_to,default="images/user_images/user.jpg")
     created_at = models.DateTimeField(auto_now_add=True)
+    user_role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number','first_name','last_name']
@@ -37,4 +44,4 @@ class CustomUser(AbstractUser):
                 counter += 1
             self.username = username
         super().save(*args, **kwargs)
-    
+

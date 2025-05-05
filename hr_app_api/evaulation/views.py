@@ -4,6 +4,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Evaulation
 from .serializers import EvaulationSerializer, EvaulationCreateSerializer
 from drf_yasg.utils import swagger_auto_schema
+from users.decorators import role_required
 
 # Create your views here.
 
@@ -15,6 +16,7 @@ from drf_yasg.utils import swagger_auto_schema
 )
 @api_view(['POST'])
 @parser_classes([MultiPartParser,FormParser])
+@role_required(['Evaulator'])
 def create_evaulation(request):
     serializer = EvaulationSerializer(data=request.data)
     if serializer.is_valid():
@@ -30,6 +32,7 @@ def create_evaulation(request):
 )
 @api_view(['PUT'])
 @parser_classes([MultiPartParser,FormParser])
+@role_required(['Evaulator'])
 def update_evaulation(request,pk):
     evaulation = Evaulation.objects.get(pk=pk)
     serializer = EvaulationSerializer(evaulation, data = request.data)
@@ -40,6 +43,7 @@ def update_evaulation(request,pk):
 
 @api_view(['DELETE'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Evaulator'])
 def delete_evaulation(request,pk):
     evaulation = Evaulation.objects.get(pk=pk)
     evaulation.delete()
@@ -47,6 +51,7 @@ def delete_evaulation(request,pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Evaulator'])
 def view_evaulation(request, pk):
     evaulation = Evaulation.objects.get(pk=pk)
     serializer = EvaulationSerializer(evaulation)
@@ -54,6 +59,7 @@ def view_evaulation(request, pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Evaulator'])
 def view_all_evaulations(request):
     evaulations = Evaulation.objects.all()
     serializer = EvaulationSerializer(evaulations, many=True)

@@ -8,25 +8,9 @@ from .models import Application
 from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from users.decorators import role_required
 
 # Create your views here.
-
-# @extend_schema(
-#     request=ApplicationSerializer,
-#     examples=[
-#         OpenApiExample(
-#             'Form data example',
-#             value={
-#                 'jobTitle': 'Software Engineer',
-#                 'cvFilePath': 'mycv.pdf',
-#                 'description': 'Applying for backend role'
-#             },
-#             request_only=True
-#         )
-#     ],
-#     responses={201: ApplicationSerializer},
-#     summary="Create"
-# )
 
 @swagger_auto_schema(
     method='post',
@@ -36,6 +20,7 @@ from drf_yasg import openapi
 )
 @api_view(['POST'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Candidate'])
 def create_application(request):
     # if request.method == 'GET':
     #     serializer = ApplicationSerializer()
@@ -54,6 +39,7 @@ def create_application(request):
 )
 @api_view(['GET','PUT'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Candidate'])
 def update_application(request,pk):
     application = Application.objects.get(pk=pk)
     if request.method == 'GET':
@@ -68,6 +54,7 @@ def update_application(request,pk):
 
 @api_view(['DELETE'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Candidate'])
 def delete_application(request, pk):
     application = Application.objects.get(pk=pk)
     application.delete()
