@@ -166,3 +166,15 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION":"An app that provides simplicity for hiring process"
 
 }
+
+SWAGGER_SETTINGS ={
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'JWT format: Bearer <token>',
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
