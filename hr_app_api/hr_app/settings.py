@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'evaulation.apps.EvaulationConfig',
     'notification.apps.NotificationConfig',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'drf_spectacular',
     'phonenumber_field',
@@ -177,4 +178,9 @@ SWAGGER_SETTINGS ={
         }
     },
     'USE_SESSION_AUTH': False,
+}
+
+SIMPLE_JWT = {
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ROTATE_REFRESH_TOKENS": True,
 }

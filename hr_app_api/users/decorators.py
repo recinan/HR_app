@@ -9,3 +9,7 @@ def role_required(role):
             return HttpResponseForbidden('Forbidden')
         return wrapper
     return decorator
+
+
+def swagger_ui_decorator():
+    pass

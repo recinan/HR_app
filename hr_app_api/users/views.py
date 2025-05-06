@@ -2,10 +2,12 @@ from django.shortcuts import render
 from .serializers import RegisterSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer, UpdateUserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.views import TokenObtainPairView
+from drf_yasg import openapi
 
 
 
@@ -62,3 +64,37 @@ def update_profile(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+refresh_token_param = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    required=["refresh_token"],
+    properties={
+        'refresh_token': openapi.Schema(type=openapi.TYPE_STRING)
+    }
+)
+
+@swagger_auto_schema(
+    method='post',
+    request_body=refresh_token_param,
+    operation_description="Log out user by blacklisting refresh token",
+    responses={
+        205: 'Token blacklisted successfully',
+        400: 'Bad Request - Invalid token or missing field'
+    }
+)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    print("Request data:", request.data)  
+    refresh_token = request.data.get("refresh_token")
+
+    if not refresh_token:
+        return Response({"detail": "refresh_token is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+    except Exception as e:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
