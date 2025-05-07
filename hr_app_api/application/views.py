@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from django.http import JsonResponse
+from django.http import FileResponse
 from rest_framework.decorators import api_view, parser_classes, schema
 from rest_framework.schemas import AutoSchema
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -9,6 +9,7 @@ from drf_spectacular.utils import extend_schema, OpenApiExample
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from users.decorators import role_required
+import os
 
 # Create your views here.
 
@@ -63,6 +64,7 @@ def delete_application(request, pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Candidate','Evaulator'])
 def view_application(request,pk):
     application = Application.objects.get(pk=pk)
     serializer = ApplicationSerializer(application)
@@ -70,7 +72,15 @@ def view_application(request,pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
+@role_required(['Evaulator','Admin'])
 def view_all_applications(request):
     applications = Application.objects.all()
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@parser_classes([MultiPartParser, FormParser])
+def download_cv_file(request,pk):
+    application = Application.objects.get(pk=pk)
+    cv_file_path = application.cvFilePath.path
+    return FileResponse(open(cv_file_path,'rb'),as_attachment=True, filename=os.path.basename(cv_file_path))
