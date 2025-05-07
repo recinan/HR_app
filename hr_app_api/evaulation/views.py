@@ -5,6 +5,7 @@ from .models import Evaulation
 from .serializers import EvaulationSerializer, EvaulationCreateSerializer
 from drf_yasg.utils import swagger_auto_schema
 from users.decorators import role_required
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -34,7 +35,7 @@ def create_evaulation(request):
 @parser_classes([MultiPartParser,FormParser])
 @role_required(['Evaulator'])
 def update_evaulation(request,pk):
-    evaulation = Evaulation.objects.get(pk=pk)
+    evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation, data = request.data)
     if serializer.is_valid():
         serializer.save(user=request.user)
@@ -45,7 +46,7 @@ def update_evaulation(request,pk):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Evaulator'])
 def delete_evaulation(request,pk):
-    evaulation = Evaulation.objects.get(pk=pk)
+    evaulation = get_object_or_404(Evaulation, pk=pk)
     evaulation.delete()
     return Response(status=204)
 
@@ -53,7 +54,7 @@ def delete_evaulation(request,pk):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Evaulator'])
 def view_evaulation(request, pk):
-    evaulation = Evaulation.objects.get(pk=pk)
+    evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation)
     return Response(serializer.data)
 

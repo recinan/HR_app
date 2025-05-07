@@ -10,6 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from users.decorators import role_required
 import os
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -42,7 +43,7 @@ def create_application(request):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Candidate'])
 def update_application(request,pk):
-    application = Application.objects.get(pk=pk)
+    application = get_object_or_404(Application,pk=pk)
     if request.method == 'GET':
         serializer = ApplicationSerializer(application)
         return Response(serializer.data)
@@ -57,7 +58,7 @@ def update_application(request,pk):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Candidate'])
 def delete_application(request, pk):
-    application = Application.objects.get(pk=pk)
+    application = get_object_or_404(Application,pk=pk)
     application.delete()
     content = "application deleted"
     return Response(content,status=204)
@@ -66,7 +67,7 @@ def delete_application(request, pk):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Candidate','Evaulator'])
 def view_application(request,pk):
-    application = Application.objects.get(pk=pk)
+    application = get_object_or_404(Application,pk=pk)
     serializer = ApplicationSerializer(application)
     return Response(serializer.data)
 
@@ -81,6 +82,6 @@ def view_all_applications(request):
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
 def download_cv_file(request,pk):
-    application = Application.objects.get(pk=pk)
+    application = get_object_or_404(Application,pk=pk)
     cv_file_path = application.cvFilePath.path
     return FileResponse(open(cv_file_path,'rb'),as_attachment=True, filename=os.path.basename(cv_file_path))
