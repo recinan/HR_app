@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from django.http import FileResponse
-from rest_framework.decorators import api_view, parser_classes, schema
+from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.schemas import AutoSchema
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import ApplicationSerializer
@@ -11,6 +11,7 @@ from drf_yasg import openapi
 from users.decorators import role_required
 import os
 from django.shortcuts import get_object_or_404
+from .permissions import IsCandidateOrEvaluator
 
 # Create your views here.
 
@@ -65,15 +66,20 @@ def delete_application(request, pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Candidate','Evaulator'])
+@role_required(['Candidate','Evaluator'])
+@permission_classes([IsCandidateOrEvaluator])
 def view_application(request,pk):
     application = get_object_or_404(Application,pk=pk)
+
+    if not IsCandidateOrEvaluator().has_object_permission(request,None, application):
+        return Response({"error":"Forbidden"},status=403)
+
     serializer = ApplicationSerializer(application)
     return Response(serializer.data)
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaulator','Admin'])
+@role_required(['Evaluator','Admin'])
 def view_all_applications(request):
     applications = Application.objects.all()
     serializer = ApplicationSerializer(applications, many=True)

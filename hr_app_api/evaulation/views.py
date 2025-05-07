@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404
 )
 @api_view(['POST'])
 @parser_classes([MultiPartParser,FormParser])
-@role_required(['Evaulator'])
+@role_required(['Evaluator'])
 def create_evaulation(request):
     serializer = EvaulationSerializer(data=request.data)
     if serializer.is_valid():
@@ -33,7 +33,7 @@ def create_evaulation(request):
 )
 @api_view(['PUT'])
 @parser_classes([MultiPartParser,FormParser])
-@role_required(['Evaulator'])
+@role_required(['Evaluator'])
 def update_evaulation(request,pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation, data = request.data)
@@ -44,7 +44,7 @@ def update_evaulation(request,pk):
 
 @api_view(['DELETE'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaulator'])
+@role_required(['Evaluator'])
 def delete_evaulation(request,pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     evaulation.delete()
@@ -52,7 +52,7 @@ def delete_evaulation(request,pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaulator'])
+@role_required(['Evaluator'])
 def view_evaulation(request, pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation)
@@ -60,7 +60,7 @@ def view_evaulation(request, pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaulator'])
+@role_required(['Evaluator'])
 def view_all_evaulations(request):
     evaulations = Evaulation.objects.all()
     serializer = EvaulationSerializer(evaulations, many=True)
