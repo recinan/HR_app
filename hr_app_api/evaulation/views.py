@@ -1,11 +1,12 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Evaulation
 from .serializers import EvaulationSerializer, EvaulationCreateSerializer
 from drf_yasg.utils import swagger_auto_schema
 from users.decorators import role_required
 from django.shortcuts import get_object_or_404
+from .permissions import IsAdmin
 
 # Create your views here.
 
@@ -17,7 +18,7 @@ from django.shortcuts import get_object_or_404
 )
 @api_view(['POST'])
 @parser_classes([MultiPartParser,FormParser])
-@role_required(['Evaluator'])
+@role_required(['Evaluator','Admin'])
 def create_evaulation(request):
     serializer = EvaulationSerializer(data=request.data)
     if serializer.is_valid():
@@ -33,7 +34,7 @@ def create_evaulation(request):
 )
 @api_view(['PUT'])
 @parser_classes([MultiPartParser,FormParser])
-@role_required(['Evaluator'])
+@role_required(['Evaluator','Admin'])
 def update_evaulation(request,pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation, data = request.data)
@@ -44,7 +45,7 @@ def update_evaulation(request,pk):
 
 @api_view(['DELETE'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaluator'])
+@role_required(['Evaluator','Admin'])
 def delete_evaulation(request,pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     evaulation.delete()
@@ -52,7 +53,7 @@ def delete_evaulation(request,pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaluator'])
+@role_required(['Evaluator','Admin'])
 def view_evaulation(request, pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
     serializer = EvaulationSerializer(evaulation)
@@ -60,8 +61,13 @@ def view_evaulation(request, pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaluator'])
+@role_required(['Admin'])
+@permission_classes([IsAdmin])
 def view_all_evaulations(request):
     evaulations = Evaulation.objects.all()
+
+    if IsAdmin().has_object_permission(request, None, evaulations):
+        return Response({"error":"You are not allowed to do this!"}, status=403)
+    
     serializer = EvaulationSerializer(evaulations, many=True)
     return Response(serializer.data)
