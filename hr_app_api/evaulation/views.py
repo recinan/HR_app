@@ -57,18 +57,18 @@ def delete_evaulation(request,pk):
 @parser_classes([MultiPartParser, FormParser])
 @role_required(['Evaluator','Admin','Candidate'])
 def view_evaulation(request, pk):
-    evaulation = get_object_or_404(Evaulation, pk=pk)
+    evaluation = get_object_or_404(Evaulation, pk=pk)
 
     if request.user.user_role in ['Evaluator','Admin']:
-        serializer = EvaulationSerializer(evaulation)
+        serializer = EvaulationSerializer(evaluation)
         return Response(serializer.data)
     
     elif request.user.user_role == 'Candidate':
         sum_of_evaluators = Role.objects.filter(role_name='Evaluator').count()
-        sum_of_evaluations = Evaulation.objects.filter(application=evaulation.application).count()
+        sum_of_evaluations = Evaulation.objects.filter(application=evaluation.application).count()
 
         if sum_of_evaluators >= sum_of_evaluations:
-            serializer = EvaulationSerializer(evaulation)
+            serializer = EvaulationSerializer(evaluation)
             return Response(serializer.data)
         else:
             return Response({'error':'This evaluation has not been completed'})
