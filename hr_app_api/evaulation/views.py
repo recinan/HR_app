@@ -2,11 +2,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Evaulation
+from users.models import Role
 from .serializers import EvaulationSerializer, EvaulationCreateSerializer
 from drf_yasg.utils import swagger_auto_schema
 from users.decorators import role_required
 from django.shortcuts import get_object_or_404
 from .permissions import IsAdmin
+
 
 # Create your views here.
 
@@ -53,11 +55,25 @@ def delete_evaulation(request,pk):
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
-@role_required(['Evaluator','Admin'])
+@role_required(['Evaluator','Admin','Candidate'])
 def view_evaulation(request, pk):
     evaulation = get_object_or_404(Evaulation, pk=pk)
-    serializer = EvaulationSerializer(evaulation)
-    return Response(serializer.data)
+
+    if request.user.user_role in ['Evaluator','Admin']:
+        serializer = EvaulationSerializer(evaulation)
+        return Response(serializer.data)
+    
+    elif request.user.user_role == 'Candidate':
+        sum_of_evaluators = Role.objects.filter(role_name='Evaluator').count()
+        sum_of_evaluations = Evaulation.objects.filter(application=evaulation.application).count()
+
+        if sum_of_evaluators >= sum_of_evaluations:
+            serializer = EvaulationSerializer(evaulation)
+            return Response(serializer.data)
+        else:
+            return Response({'error':'This evaluation has not been completed'})
+    else:
+        return Response({'error':'You are not allowed to see this'})        
 
 @api_view(['GET'])
 @parser_classes([MultiPartParser, FormParser])
