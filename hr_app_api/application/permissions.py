@@ -6,8 +6,9 @@ class IsCandidateOrEvaluator(BasePermission):
         return request.user.is_authenticated
     
     def has_object_permission(self, request, view, obj):
-        if request.user.role == 'Evaluator':
+        role = str(request.user.user_role)
+        if role == 'Evaluator':
             return True
-        if request.user.role == 'Candidate':
+        if role == 'Candidate':
             return obj.user == request.user
         return False
