@@ -26,7 +26,7 @@ This project is a web-based HR App that provides simplicity for hiring process. 
 - JWT is used for user authentication.
 - Users are assigned roles with specific permissions:
   - **Candidate:** Can submit applications and upload/download documents
-  - **Evaluator** Can view, upload/download documents and evaluate applications
+  - **Evaluator:** Can view, upload/download documents and evaluate applications
   - **Admin:** Can manage job postings and system settings
 
 ## 📄 API Documentation
