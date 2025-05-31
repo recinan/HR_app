@@ -1,11 +1,11 @@
 # HR App
 
-This project is a web-based recruitment management system developed to digitalize internal hiring processes. The backend was built using Django Rest Framework (DRF).
+This project is a web-based HR App that provides simplicity for hiring process. The backend was built using Django Rest Framework.
 
 ## 🚀 Features
 
 - JWT-based authentication system
-- Role-based authorization (Applicant, Committee Member, Administrator)
+- Role-based authorization
 - Application submission with file upload/download support
 - Candidate evaluation and scoring by committee members
 - Automated email notifications (e.g., application status updates)
@@ -17,17 +17,17 @@ This project is a web-based recruitment management system developed to digitaliz
 - **Django**
 - **Django REST Framework**
 - **PostgreSQL**
-- **JWT (djangorestframework-simplejwt)**
-- **Swagger UI (drf-yasg)**
-- **SMTP / Celery / Redis** (if used – feel free to modify)
+- **JWT**
+- **Swagger UI**
+- **SMTP** 
 
 ## 🔐 Authentication & Authorization
 
 - JWT is used for user authentication.
 - Users are assigned roles with specific permissions:
-  - **Applicant:** Can submit applications and upload documents
-  - **Committee Member:** Can view and evaluate applications
-  - **Administrator:** Can manage job postings and system settings
+  - **Candidate:** Can submit applications and upload/download documents
+  - **Evaluator** Can view, upload/download documents and evaluate applications
+  - **Admin:** Can manage job postings and system settings
 
 ## 📄 API Documentation
 
